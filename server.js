@@ -11,10 +11,9 @@ app.use(cors());
 app.get('/check-regional/:gamepassId', async (req, res) => {
     try {
         const { gamepassId } = req.params;
-        
         console.log(`🔍 Verificando gamepass ${gamepassId}...`);
         
-        // 🔥 AQUI ESTÁ A LÓGICA QUE FUNCIONA!
+        // AQUI ESTÁ A LÓGICA QUE FUNCIONA!
         const response = await axios.get(`https://economy.roblox.com/v2/assets/${gamepassId}/details`, {
             timeout: 10000,
             headers: {
@@ -38,6 +37,7 @@ app.get('/check-regional/:gamepassId', async (req, res) => {
         
         console.log(`✅ Gamepass: ${data.Name} | Regional: ${regionalActive}`);
         
+        // RETORNA O RESULTADO
         res.json({
             success: true,
             regionalActive: regionalActive,
@@ -56,6 +56,7 @@ app.get('/check-regional/:gamepassId', async (req, res) => {
     }
 });
 
+// ROTA RAIZ (para testar se o servidor está online)
 app.get('/', (req, res) => {
     res.json({ status: 'Proxy regional rodando!' });
 });
