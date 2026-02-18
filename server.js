@@ -7,14 +7,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// EXATAMENTE A MESMA ROTA QUE FUNCIONA NO SEU PC
 app.get('/check-regional/:gamepassId', async (req, res) => {
     try {
         const { gamepassId } = req.params;
         console.log(`🔍 Verificando gamepass ${gamepassId}...`);
         
-        // AQUI ESTÁ A LÓGICA QUE FUNCIONA!
-        const response = await axios.get(`https://economy.roblox.com/v2/assets/${gamepassId}/details`, {
+        // ✅ URL CORRETA PARA GAMEPASS
+        const response = await axios.get(`https://games.roblox.com/v1/game-passes/${gamepassId}/details`, {
             timeout: 10000,
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -27,22 +26,21 @@ app.get('/check-regional/:gamepassId', async (req, res) => {
         // DETECÇÃO DE PREÇO REGIONAL
         let regionalActive = false;
         
-        if (data.PriceInTiers && data.PriceInTiers.length > 0) {
+        if (data.priceInTiers && data.priceInTiers.length > 0) {
             regionalActive = true;
         }
         
-        if (data.SaleLocation && data.SaleLocation.CountryCode === 'BR') {
+        if (data.saleLocation && data.saleLocation.countryCode === 'BR') {
             regionalActive = true;
         }
         
-        console.log(`✅ Gamepass: ${data.Name} | Regional: ${regionalActive}`);
+        console.log(`✅ Gamepass: ${data.name} | Regional: ${regionalActive}`);
         
-        // RETORNA O RESULTADO
         res.json({
             success: true,
             regionalActive: regionalActive,
-            name: data.Name,
-            price: data.PriceInRobux,
+            name: data.name,
+            price: data.priceInRobux,
             message: regionalActive ? '⚠️ PREÇO REGIONAL ATIVO' : '✅ Preço normal'
         });
         
@@ -56,7 +54,6 @@ app.get('/check-regional/:gamepassId', async (req, res) => {
     }
 });
 
-// ROTA RAIZ (para testar se o servidor está online)
 app.get('/', (req, res) => {
     res.json({ status: 'Proxy regional rodando!' });
 });
